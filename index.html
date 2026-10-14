@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Журнал КТ-досліджень (ветеринарія)</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; color: #0b0b0b; font-weight: 600; font-size: 17px; background: linear-gradient(135deg, #c9e4ff 0%, #d9c9ff 50%, #ffd9e8 100%); background-attachment: fixed; }
+    h1, h2, h3 { color: #0d1b2a; font-weight: 800; letter-spacing: 0.2px; }
+    h1 { font-size: 34px; text-shadow: 0 1px 0 rgba(255,255,255,0.8), 0 2px 4px rgba(0,0,0,0.15); }
+    h2 { font-size: 26px; }
+    h3 { font-size: 22px; }
+
+    section { padding: 20px; margin-bottom: 24px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.18); border-left: 6px solid #ccc; position: relative; }
+
+    #study-form-section { background: linear-gradient(135deg, rgba(174, 214, 241, 0.9) 0%, rgba(133, 193, 233, 0.85) 100%); border-left-color: #1b4f72; }
+    #study-form-section h2 { color: #0d2b45; }
+
+    #study-list-section { background: linear-gradient(135deg, rgba(169, 223, 191, 0.9) 0%, rgba(125, 206, 160, 0.85) 100%); border-left-color: #145a32; }
+    #study-list-section h2 { color: #0b3d22; }
+
+    #detail-panel { background: linear-gradient(135deg, rgba(215, 189, 226, 0.9) 0%, rgba(187, 143, 206, 0.85) 100%); border-left-color: #4a235a; }
+    #detail-panel h2 { color: #3b1a4a; }
+    #detail-panel h3 { color: #4a235a; }
+
+    .toolbar {
+      display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap;
+      padding: 16px 18px; border-radius: 10px;
+      background: linear-gradient(135deg, rgba(252, 220, 130, 0.95) 0%, rgba(247, 200, 80, 0.9) 100%);
+      border-left: 6px solid #9c6500;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+
+    form {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; align-items: flex-start;
+      background: rgba(255, 255, 255, 0.75);
+      padding: 16px; border-radius: 10px;
+      border: 2px solid rgba(21, 67, 96, 0.6);
+      overflow: visible;
+    }
+
+    input, select {
+      padding: 11px 12px; border: 2px solid #333; border-radius: 6px; font-size: 16px;
+      background: #fff; transition: all 0.15s ease;
+      font-weight: 700;
+      color: #0b0b0b;
+    }
+    input::placeholder { color: #3d3d3d; font-weight: 700; opacity: 1; font-size: 15px; }
+    input:focus, select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(41, 128, 185, 0.55);
+      transform: translateY(-1px);
+    }
+
+    input[name="studyId"] { background: rgba(241, 148, 138, 0.75); border-color: #7b241c; }
+    input[name="studyId"]:focus { box-shadow: 0 0 0 3px rgba(123, 36, 28, 0.5); }
+
+    input[name="patientName"] { background: rgba(245, 176, 116, 0.8); border-color: #7e5109; }
+    input[name="patientName"]:focus { box-shadow: 0 0 0 3px rgba(126, 81, 9, 0.5); }
+
+    select[name="species"] { background: rgba(247, 220, 111, 0.9); border-color: #7d6608; }
+    select[name="species"]:focus { box-shadow: 0 0 0 3px rgba(125, 102, 8, 0.5); }
+
+    input[name="breed"] { background: rgba(171, 235, 198, 0.85); border-color: #145a32; }
+    input[name="breed"]:focus { box-shadow: 0 0 0 3px rgba(20, 90, 50, 0.5); }
+
+    input[name="age"] { background: rgba(163, 228, 215, 0.85); border-color: #0b5345; }
+    input[name="age"]:focus { box-shadow: 0 0 0 3px rgba(11, 83, 69, 0.5); }
+
+    select[name="sex"] { background: rgba(169, 204, 227, 0.9); border-color: #154360; }
+    select[name="sex"]:focus { box-shadow: 0 0 0 3px rgba(21, 67, 96, 0.5); }
+
+    input[name="owner"] { background: rgba(133, 193, 233, 0.8); border-color: #0e2f44; }
+    input[name="owner"]:focus { box-shadow: 0 0 0 3px rgba(14, 47, 68, 0.5); }
+
+    input[name="date"] { background: rgba(210, 180, 222, 0.85); border-color: #4a235a; }
+    input[name="date"]:focus { box-shadow: 0 0 0 3px rgba(74, 35, 90, 0.5); }
+
+    select[name="category"], input[name="category"] { background: rgba(245, 183, 208, 0.9); border-color: #7b241c; }
+
+    button { padding: 11px 16px; border-radius: 6px; font-size: 16px; font-weight: 800; cursor: pointer; transition: all 0.15s ease; letter-spacing: 0.3px; border: none; }
+    button { background: #1f5f8b; color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,0.35); }
+    button:hover { background: #154a6c; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.3); }
+
+    #exportBtn { background: #145a32; }
+    #exportBtn:hover { background: #0b3d22; }
+
+    #changePasswordBtn { background: #9c6500; }
+    #changePasswordBtn:hover { background: #6b4500; }
+
+    #clearBtn { background: #7b241c; }
+    #clearBtn:hover { background: #58170f; }
+
+    #addBodyPartBtn { background: #0b5345; }
+    #addBodyPartBtn:hover { background: #06342c; }
+
+    #resetFilters { background: #4a235a; }
+    #resetFilters:hover { background: #2e1540; }
+
+    #msClearBtn { background: #424949; }
+    #msClearBtn:hover { background: #212424; }
+
+    #newPathologyForm button[type="submit"] { background: #0e2f44; }
+    #newPathologyForm button[type="submit"]:hover { background: #061a28; }
+
+    button.danger { background: #7b241c; }
+    button.danger:hover { background: #58170f; }
+    button.secondary { background: #424949; }
+    button.secondary:hover { background: #212424; }
+    button.small { padding: 9px 13px; font-size: 15px; }
+
+    #newStudyForm > button[type="submit"] {
+      background: linear-gradient(135deg, #1e8449 0%, #0b3d22 100%);
+      font-size: 18px;
+      padding: 14px 24px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    #newStudyForm > button[type="submit"]:hover {
+      background: linear-gradient(135deg, #145a32 0%, #06240f 100%);
+    }
+
+    table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    th, td { border-bottom: 1px solid rgba(120, 130, 140, 0.7); border-right: 1px solid rgba(120, 130, 140, 0.5); padding: 12px; text-align: left; font-size: 16px; vertical-align: top; color: #0b0b0b; font-weight: 700; }
+    th:last-child, td:last-child { border-right: none; }
+    th { background: linear-gradient(135deg, #1c2833 0%, #0b1116 100%); color: #ffffff; font-weight: 800; font-size: 16px; letter-spacing: 0.4px; text-shadow: 0 1px 1px rgba(0,0,0,0.5); }
+    tbody tr { background: #ffffff; }
+    tbody tr:nth-child(even) { background: #eef2f5; }
+    tbody tr:hover { background: rgba(133, 193, 233, 0.75); cursor: pointer; }
+    .selected { background: rgba(41, 128, 185, 0.75) !important; color: #fff; }
+
+    .id-cell { font-family: monospace; font-weight: 800; color: #58170f; font-size: 16px; }
+    .selected .id-cell { color: #ffe082; }
+
+    .pathology-list { list-style: none; padding: 0; }
+    .pathology-list li {
+      background: rgba(249, 231, 159, 0.95);
+      border: 2px solid rgba(150, 110, 10, 0.7);
+      border-left: 5px solid #7d6608;
+      padding: 12px; margin-bottom: 6px; border-radius: 6px;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      color: #0b0b0b; font-weight: 700; font-size: 16px;
+    }
+    .pathology-list li button { padding: 6px 10px; font-size: 14px; }
+
+    .hidden { display: none; }
+
+    .search-box {
+      display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;
+      background: linear-gradient(135deg, rgba(163, 228, 215, 0.95) 0%, rgba(118, 215, 196, 0.9) 100%);
+      padding: 16px 18px; border-radius: 8px;
+      border-left: 5px solid #06342c;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .search-box input { flex: 1; min-width: 200px; background: #fff; border-color: #06342c; }
+
+    .badge { display: inline-block; background: #1f5f8b; color: #ffffff; border-radius: 12px; padding: 4px 11px; font-size: 14px; font-weight: 800; text-shadow: 0 1px 1px rgba(0,0,0,0.3); }
+    .badge.zero { background: #424949; }
+    .badge.contrast { background: #145a32; }
+    .badge.nocontrast { background: #566573; color: #fff; }
+    mark { background: #ffca28; color: #000; padding: 0 3px; border-radius: 2px; font-weight: 900; }
+    .hint { color: #0d2b45; font-size: 15px; margin-top: 8px; font-style: italic; font-weight: 700; }
+    .required { border-left: 4px solid #7b241c; padding-left: 8px; border-radius: 4px 0 0 4px; }
+
+    .contrast-block {
+      display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+      background: linear-gradient(135deg, rgba(252, 220, 130, 0.95) 0%, rgba(248, 196, 113, 0.9) 100%);
+      padding: 14px 16px; border-radius: 8px;
+      border: 2px solid rgba(150, 100, 5, 0.7);
+      border-left: 5px solid #7d6608;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+    }
+    .contrast-block label { font-weight: 800; cursor: pointer; user-select: none; color: #3d2800; font-size: 16px; }
+    .contrast-block input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: #7d6608; }
+
+    .chips-input {
+      display: flex; flex-direction: column; gap: 10px; width: 100%;
+      background: linear-gradient(135deg, rgba(245, 183, 208, 0.85) 0%, rgba(240, 154, 189, 0.8) 100%);
+      padding: 14px; border-radius: 8px;
+      border: 2px dashed rgba(120, 20, 15, 0.7);
+      border-left: 5px solid #7b241c;
+    }
+    .chips-input > label { font-size: 16px; }
+    .chips-row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, #a93226 0%, #6b1a12 100%);
+      color: #ffffff;
+      border-radius: 16px; padding: 6px 14px; font-size: 15px; font-weight: 800;
+      box-shadow: 0 2px 5px rgba(80, 15, 10, 0.5);
+      text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+    }
+    .chip button { background: transparent; color: #ffe082; border: none; padding: 0; font-size: 18px; line-height: 1; cursor: pointer; font-weight: 900; }
+    .chip button:hover { color: #ffffff; background: transparent; box-shadow: none; transform: none; }
+
+    /* ============ МУЛЬТИВИБІР ДІАГНОЗІВ — ВИПРАВЛЕНО ============ */
+    .ms-wrap { position: relative; display: inline-block; }
+    .ms-input { width: 360px; cursor: pointer; background: #fff; border-color: #4a235a; text-overflow: ellipsis; }
+
+    /* ===== МОДАЛЬНЕ ВІКНО ВИБОРУ ДІАГНОЗІВ ===== */
+    .dx-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(0,0,0,0.55);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .dx-overlay.hidden { display: none; }
+    .dx-modal {
+      background: #fff; border: 3px solid #4a235a; border-radius: 12px;
+      width: 720px; max-width: 100%; max-height: 90vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.45); overflow: hidden;
+    }
+    .dx-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 12px 16px; background: linear-gradient(135deg, #4a235a 0%, #2e1540 100%); color: #fff;
+    }
+    .dx-head h3 { margin: 0; color: #fff; font-size: 20px; }
+    .dx-close { background: transparent; border: none; color: #fff; font-size: 26px; line-height: 1; cursor: pointer; padding: 0 6px; box-shadow: none; }
+    .dx-close:hover { background: transparent; color: #f1c40f; transform: none; box-shadow: none; }
+    .dx-search-row { padding: 12px 16px; border-bottom: 2px solid #e5d5ee; }
+    .dx-search-row input { width: 100%; box-sizing: border-box; border-color: #4a235a; }
+    #diagnosisOptions, .dx-options { overflow-y: auto; flex: 1; min-height: 120px; }
+    .pick-input { cursor: pointer; text-overflow: ellipsis; }
+    .dx-modal .ms-option.custom { background: rgba(241,196,15,0.25); }
+    .dx-modal .ms-option.radio-sel::after { content: "✓"; margin-left: auto; font-size: 18px; color: #4a235a; }
+    .dx-chips { padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 6px; border-top: 2px solid #e5d5ee; max-height: 90px; overflow-y: auto; }
+    .dx-chips:empty { display: none; }
+    .dx-chip { background: rgba(187,143,206,0.35); border: 2px solid #4a235a; border-radius: 14px; padding: 2px 10px; font-size: 13px; font-weight: 800; color: #2e1540; }
+
+    .dx-modal .ms-option {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; font-size: 15px;
+      cursor: pointer; color: #0b0b0b; font-weight: 700;
+      user-select: none;
+    }
+    .dx-modal .ms-option:hover { background: rgba(210, 180, 222, 0.7); }
+    .dx-modal .ms-option.selected { background: rgba(187, 143, 206, 0.85); font-weight: 800; }
+    .dx-modal .ms-option input[type="checkbox"] {
+      width: 20px; height: 20px;
+      accent-color: #4a235a;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .dx-modal .ms-option span { pointer-events: none; }  /* ВАЖЛИВО: клік іде на label/checkbox */
+
+    .dx-modal .ms-group {
+      padding: 9px 14px 5px; font-size: 12px; text-transform: uppercase;
+      color: #fff; font-weight: 800; letter-spacing: 0.6px;
+      background: linear-gradient(135deg, #4a235a 0%, #2e1540 100%);
+      text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+      position: sticky; top: 0; z-index: 1;
+    }
+    .dx-modal .ms-empty { padding: 12px 14px; color: #2c3e50; font-size: 15px; font-weight: 700; }
+
+    .ms-footer {
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #bb8fce 0%, #9b59b6 100%);
+      border-top: 2px solid #4a235a;
+      padding: 11px 14px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 8px; font-size: 15px; font-weight: 800;
+    }
+    .ms-footer .count { color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,0.4); }
+
+    /* Візуальний індикатор кількості обраного біля поля */
+    #msCount::before { content: ""; }
+  </style>
+</head>
+<body>
+  <h1>Журнал КТ-досліджень (ветеринарія)</h1>
+
+  <div class="toolbar">
+    <button id="exportBtn">Експорт CSV</button>
+    <button id="changePasswordBtn" class="secondary">Змінити пароль</button>
+    <button id="clearBtn" class="danger">Очистити всі дані</button>
+  </div>
+
+  <section id="study-form-section">
+    <h2>Додати нове дослідження</h2>
+    <form id="newStudyForm">
+      <div class="required">
+        <input type="text" id="studyIdInput" name="studyId" placeholder="ID дослідження" required style="width:220px;">
+      </div>
+      <input type="text" name="patientName" placeholder="Кличка" required>
+      <select name="species" required>
+        <option value="">Вид</option>
+        <option value="Собака">Собака</option>
+        <option value="Кіт">Кіт</option>
+        <option value="Кішка">Кішка</option>
+        <option value="Кролик">Кролик</option>
+        <option value="Мурчак">Мурчак</option>
+        <option value="Пацюк">Пацюк</option>
+        <option value="Птах">Птах</option>
+        <option value="Рептилія">Рептилія</option>
+        <option value="Змія">Змія</option>
+        <option value="Інше">Інше</option>
+      </select>
+      <input type="text" name="breed" id="breedInput" class="pick-input" placeholder="Порода" style="width:220px;" readonly autocomplete="off">
+      <datalist id="breedList">
+        <option value="Лабрадор-ретривер"></option>
+        <option value="Голден-ретривер"></option>
+        <option value="Німецька вівчарка"></option>
+        <option value="Бельгійська вівчарка (малінуа)"></option>
+        <option value="Східноєвропейська вівчарка"></option>
+        <option value="Йоркширський тер'єр"></option>
+        <option value="Джек-рассел-тер'єр"></option>
+        <option value="Французький бульдог"></option>
+        <option value="Англійський бульдог"></option>
+        <option value="Мопс"></option>
+        <option value="Чихуахуа"></option>
+        <option value="Померанський шпіц"></option>
+        <option value="Ші-тцу"></option>
+        <option value="Мальтезе (мальтійська болонка)"></option>
+        <option value="Бішон-фризе"></option>
+        <option value="Пудель (великий, малий, той)"></option>
+        <option value="Такса"></option>
+        <option value="Бігль"></option>
+        <option value="Кокер-спаніель (англійський)"></option>
+        <option value="Кокер-спаніель (американський)"></option>
+        <option value="Спрінгер-спаніель"></option>
+        <option value="Ротвейлер"></option>
+        <option value="Доберман"></option>
+        <option value="Боксер"></option>
+        <option value="Алабай (середньоазіатська вівчарка)"></option>
+        <option value="Кавказька вівчарка"></option>
+        <option value="Сибірський хаскі"></option>
+        <option value="Аляскинський маламут"></option>
+        <option value="Акіта-іну"></option>
+        <option value="Самоїд"></option>
+        <option value="Шарпей"></option>
+        <option value="Чау-чау"></option>
+        <option value="Далматин"></option>
+        <option value="Веймаранер"></option>
+        <option value="Курцхаар"></option>
+        <option value="Дратхар"></option>
+        <option value="Англійський сетер"></option>
+        <option value="Ірландський сетер"></option>
+        <option value="Бордер-колі"></option>
+        <option value="Шелті"></option>
+        <option value="Австралійська вівчарка (аусі)"></option>
+        <option value="Коргі (вельш, пемброк)"></option>
+        <option value="Метис"></option>
+        <option value="Безпородна"></option>
+        <option value="Британська короткошерста"></option>
+        <option value="Шотландська висловуха"></option>
+        <option value="Шотландська прямоуха"></option>
+        <option value="Мейн-кун"></option>
+        <option value="Сфінкс (канадський)"></option>
+        <option value="Донський сфінкс"></option>
+        <option value="Петерболд"></option>
+        <option value="Бенгальська"></option>
+        <option value="Сіамська"></option>
+        <option value="Тайська"></option>
+        <option value="Орієнтальна"></option>
+        <option value="Абісинська"></option>
+        <option value="Бірманська"></option>
+        <option value="Бурманська"></option>
+        <option value="Перська"></option>
+        <option value="Екзотична короткошерста"></option>
+        <option value="Невська маскарадна"></option>
+        <option value="Сибірська"></option>
+        <option value="Норвезька лісова"></option>
+        <option value="Російська блакитна"></option>
+        <option value="Метис"></option>
+        <option value="Безпородна"></option>
+        <option value="Кролик декоративний"></option>
+        <option value="Кролик м'ясний"></option>
+        <option value="Мурчак англійський"></option>
+        <option value="Мурчак абісинський"></option>
+        <option value="Мурчак перуанський"></option>
+        <option value="Пацюк декоративний"></option>
+        <option value="Хом'як сирійський"></option>
+        <option value="Хом'як джунгарський"></option>
+        <option value="Шиншила"></option>
+        <option value="Дегу"></option>
+        <option value="Папуга хвилястий"></option>
+        <option value="Папуга корела"></option>
+        <option value="Папуга жако"></option>
+        <option value="Папуга ара"></option>
+        <option value="Папуга амазон"></option>
+        <option value="Папуга неразлучники"></option>
+        <option value="Канарка"></option>
+        <option value="Голуб"></option>
+        <option value="Курка"></option>
+        <option value="Качка"></option>
+        <option value="Гуска"></option>
+        <option value="Індик"></option>
+        <option value="Черепаха сухопутна"></option>
+        <option value="Черепаха водяна"></option>
+        <option value="Ящірка (агама, ігуана)"></option>
+        <option value="Гекон"></option>
+        <option value="Хамелеон"></option>
+        <option value="Змія (пітон)"></option>
+        <option value="Змія (удав)"></option>
+        <option value="Змія (полоз)"></option>
+        <option value="Інше"></option>
+      </datalist>
+      <input type="text" name="age" placeholder="Вік" style="width:110px;">
+      <select name="sex">
+        <option value="">Стать</option>
+        <option value="Самець">Самець</option>
+        <option value="Самка">Самка</option>
+        <option value="Самець (кастрований)">Самець (кастрований)</option>
+        <option value="Самка (стерилізована)">Самка (стерилізована)</option>
+        <option value="Невідомо">Невідомо</option>
+      </select>
+      <input type="text" name="owner" placeholder="Власник">
+      <input type="date" name="date" required>
+
+      <div class="chips-input" style="flex-basis:100%;">
+        <label style="font-weight:800;color:#58170f;">Ділянка тіла (можна декілька):</label>
+        <div class="chips-row">
+          <input type="text" id="bodyPartInput" class="pick-input" placeholder="Оберіть ділянку тіла…" style="width:340px;" readonly autocomplete="off">
+          <datalist id="bodyPartList">
+            <option value="Голова"></option>
+            <option value="Шия"></option>
+            <option value="Грудна клітка"></option>
+            <option value="Черевна порожнина"></option>
+            <option value="Хребет (шия)"></option>
+            <option value="Хребет (груди)"></option>
+            <option value="Хребет (поперек)"></option>
+            <option value="Хребет (крижі)"></option>
+            <option value="Таз"></option>
+            <option value="Кінцівка (передня)"></option>
+            <option value="Кінцівка (задня)"></option>
+            <option value="Все тіло"></option>
+            <option value="Інше"></option>
+          </datalist>
+        </div>
+        <div class="chips" id="bodyPartChips"></div>
+      </div>
+
+      <div class="contrast-block" style="flex-basis:100%;">
+        <label for="contrastInput">Контрастування:</label>
+        <input type="text" id="contrastInput" name="contrastValue" class="pick-input" value="Без контрастування" placeholder="Оберіть контрастування…" style="width:320px;" readonly autocomplete="off">
+      </div>
+
+      <button type="submit" style="flex-basis:100%; max-width:260px;">Додати дослідження</button>
+    </form>
+    <p class="hint">ID вводиться вручну. Ділянку тіла можна додати декілька. Позначте чекбокс для контрастування.</p>
+  </section>
+
+  <section id="study-list-section">
+    <h2>Список досліджень</h2>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Пошук за ID, кличкою, власником, діагнозом, контрастом…">
+      <select id="speciesFilter">
+        <option value="">Усі види</option>
+        <option value="Собака">Собака</option>
+        <option value="Кіт">Кіт</option>
+        <option value="Кішка">Кішка</option>
+        <option value="Кролик">Кролик</option>
+        <option value="Мурчак">Мурчак</option>
+        <option value="Пацюк">Пацюк</option>
+        <option value="Птах">Птах</option>
+        <option value="Рептилія">Рептилія</option>
+        <option value="Змія">Змія</option>
+        <option value="Інше">Інше</option>
+      </select>
+      <select id="bodyPartFilter">
+        <option value="">Усі ділянки тіла</option>
+        <option value="Голова">Голова</option>
+        <option value="Шия">Шия</option>
+        <option value="Грудна клітка">Грудна клітка</option>
+        <option value="Черевна порожнина">Черевна порожнина</option>
+        <option value="Хребет (шия)">Хребет (шия)</option>
+        <option value="Хребет (груди)">Хребет (груди)</option>
+        <option value="Хребет (поперек)">Хребет (поперек)</option>
+        <option value="Хребет (крижі)">Хребет (крижі)</option>
+        <option value="Таз">Таз</option>
+        <option value="Кінцівка (передня)">Кінцівка (передня)</option>
+        <option value="Кінцівка (задня)">Кінцівка (задня)</option>
+        <option value="Все тіло">Все тіло</option>
+        <option value="Інше">Інше</option>
+      </select>
+      <select id="contrastFilter">
+        <option value="">Усі дослідження</option>
+        <option value="with">Лише з контрастом</option>
+        <option value="without">Лише без контрасту</option>
+      </select>
+      <button id="resetFilters">Скинути</button>
+    </div>
+    <p class="hint" id="resultCount"></p>
+
+    <table id="studiesTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Дата</th>
+          <th>Кличка</th>
+          <th>Вид</th>
+          <th>Ділянки тіла</th>
+          <th>Контраст</th>
+          <th>Діагнози</th>
+          <th>Дії</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section id="detail-panel" class="hidden">
+    <h2>Деталі дослідження</h2>
+    <div id="studyDetails"></div>
+    <h3>Діагнози / знахідки</h3>
+    <ul id="pathologyList" class="pathology-list"></ul>
+    <h3>Додати діагнози</h3>
+    <form id="newPathologyForm">
+      <input type="text" name="category" id="categoryInput" class="pick-input" placeholder="Категорія" style="width:230px;" readonly autocomplete="off">
+
+      <div class="ms-wrap">
+        <input type="text" id="diagnosisSearch" class="ms-input" placeholder="Оберіть один або декілька діагнозів…" autocomplete="off" readonly>
+      </div>
+
+      <input type="text" name="location" placeholder="Локалізація / уточнення" style="width:240px;">
+      <input type="text" name="notes" placeholder="Примітки" style="width:240px;">
+      <button type="submit">Додати обрані діагнози</button>
+    </form>
+    <p class="hint">Можна обрати декілька діагнозів одразу — усі вони додадуться з однаковою категорією, локалізацією та примітками.</p>
+  </section>
+
+  <div class="dx-overlay hidden" id="diagnosisModal">
+    <div class="dx-modal" role="dialog" aria-modal="true" aria-label="Вибір діагнозів">
+      <div class="dx-head">
+        <h3>Оберіть діагнози</h3>
+        <button type="button" class="dx-close" id="dxCloseBtn" title="Закрити">&times;</button>
+      </div>
+      <div class="dx-search-row">
+        <input type="text" id="diagnosisModalSearch" placeholder="Пошук діагнозу…" autocomplete="off">
+      </div>
+      <div id="diagnosisOptions"></div>
+      <div class="dx-chips" id="dxChips"></div>
+      <div class="ms-footer">
+        <span class="count" id="msCount">Обрано: 0</span>
+        <span>
+          <button type="button" class="small" id="msClearBtn">Очистити</button>
+          <button type="button" id="dxDoneBtn">Готово</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dx-overlay hidden" id="pickerModal">
+    <div class="dx-modal" role="dialog" aria-modal="true" style="width:560px;">
+      <div class="dx-head">
+        <h3 id="pickerTitle">Оберіть</h3>
+        <button type="button" class="dx-close" id="pickerCloseBtn" title="Закрити">&times;</button>
+      </div>
+      <div class="dx-search-row">
+        <input type="text" id="pickerSearch" placeholder="Пошук…" autocomplete="off">
+      </div>
+      <div class="dx-options" id="pickerOptions"></div>
+      <div class="ms-footer" id="pickerFooter">
+        <span class="count" id="pickerCount"></span>
+        <span>
+          <button type="button" class="small" id="pickerClearBtn">Очистити</button>
+          <button type="button" id="pickerDoneBtn">Готово</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== ПОЛІФІЛ prompt() ДЛЯ ELECTRON ====================
+    function electronPrompt(message, defaultValue = '') {
+      return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;z-index:99999;';
+        const box = document.createElement('div');
+        box.style.cssText = 'background:#fff;padding:22px 24px;border-radius:10px;min-width:340px;box-shadow:0 10px 40px rgba(0,0,0,0.3);font-family:Arial,sans-serif;';
+        box.innerHTML = `
+          <p style="margin:0 0 12px;font-size:15px;color:#2c3e50;font-weight:bold;">${message}</p>
+          <input type="password" id="__pwdInput" value="${defaultValue}" style="width:100%;padding:9px;border:1px solid #ccc;border-radius:4px;font-size:14px;box-sizing:border-box;">
+          <div style="margin-top:14px;text-align:right;">
+            <button id="__pwdCancel" style="padding:8px 14px;border:1px solid #ccc;background:rgba(149,165,166,0.75);border-radius:4px;cursor:pointer;margin-right:8px;color:#fff;">Скасувати</button>
+            <button id="__pwdOk" style="padding:8px 16px;border:none;background:rgba(39,174,96,0.85);color:#fff;border-radius:4px;cursor:pointer;">OK</button>
+          </div>
+        `;
+        overlay.appendChild(box);
+        document.body.appendChild(overlay);
+        const input = box.querySelector('#__pwdInput');
+        input.focus(); input.select();
+        const done = (val) => { document.body.removeChild(overlay); resolve(val); };
+        box.querySelector('#__pwdOk').onclick = () => done(input.value);
+        box.querySelector('#__pwdCancel').onclick = () => done(null);
+        input.onkeydown = (e) => {
+          if (e.key === 'Enter') done(input.value);
+          if (e.key === 'Escape') done(null);
+        };
+      });
+    }
+
+    // ==================== СПИСОК ДІАГНОЗІВ ====================
+    const DIAGNOSES = {
+      "Загальні / Онкоскринінг": [
+        "Норма (без патологічних змін)",
+        "Онкоскринінг — без ознак новоутворень",
+        "Онкоскринінг — підозра на новоутворення",
+        "Інсиденталома (випадкова знахідка)",
+        "Артефакт зображення",
+        "Післяопераційні зміни",
+        "Стан після травми"
+      ],
+      "Новоутворення за системами": [
+        "Новоутворення головного мозку",
+        "Новоутворення органів голови та шиї",
+        "Новоутворення носової порожнини та синусів",
+        "Новоутворення орбіти",
+        "Новоутворення ротової порожнини та щелеп",
+        "Новоутворення гортані та трахеї",
+        "Новоутворення щитоподібної та паращитоподібних залоз",
+        "Новоутворення спинного мозку",
+        "Новоутворення хребта",
+        "Новоутворення легень",
+        "Новоутворення середостіння",
+        "Новоутворення грудної стінки",
+        "Новоутворення плеври",
+        "Новоутворення серця та перикарда",
+        "Новоутворення стравоходу",
+        "Новоутворення шлунка",
+        "Новоутворення кишечника",
+        "Новоутворення печінки",
+        "Новоутворення жовчного міхура та жовчних проток",
+        "Новоутворення підшлункової залози",
+        "Новоутворення селезінки",
+        "Новоутворення надниркових залоз",
+        "Новоутворення нирок",
+        "Новоутворення сечоводів",
+        "Новоутворення сечового міхура",
+        "Новоутворення уретри",
+        "Новоутворення передміхурової залози",
+        "Новоутворення яєчок",
+        "Новоутворення яєчників",
+        "Новоутворення матки",
+        "Новоутворення піхви та вульви",
+        "Новоутворення молочних залоз",
+        "Новоутворення кісток",
+        "Новоутворення суглобів",
+        "Новоутворення м'язів",
+        "Новоутворення шкіри та підшкірної клітковини",
+        "Новоутворення лімфатичних вузлів",
+        "Новоутворення судин",
+        "Новоутворення заочеревинного простору",
+        "Новоутворення черевної стінки",
+        "Новоутворення загалом (генералізоване ураження)"
+      ],
+      "Метастазування за системами": [
+        "Метастазування в головний мозок",
+        "Метастазування в органи голови та шиї",
+        "Метастазування в легені",
+        "Метастазування в середостіння",
+        "Метастазування в плевру",
+        "Метастазування в серце та перикард",
+        "Метастазування в печінку",
+        "Метастазування в селезінку",
+        "Метастазування в підшлункову залозу",
+        "Метастазування в шлунково-кишковий тракт",
+        "Метастазування в нирки",
+        "Метастазування в сечовий міхур",
+        "Метастазування в передміхурову залозу",
+        "Метастазування в статеві органи",
+        "Метастазування в кістки",
+        "Метастазування в м'які тканини",
+        "Метастазування в лімфатичні вузли",
+        "Метастазування в заочеревинний простір",
+        "Метастазування в очеревину (карциноматоз)",
+        "Метастазування множинне (генералізоване)"
+      ],
+      "Голова та ЦНС": [
+        "Менінгіома", "Гліома", "Астроцитома", "Олігодендрогліома",
+        "Лімфома ЦНС", "Гідроцефалія", "Менінгіт", "Енцефаліт",
+        "Абсцес головного мозку", "Крововилив у мозок", "Ішемічний інсульт",
+        "Черепно-мозкова травма (ЧМТ)", "Перелом кісток черепа",
+        "Епідуральна гематома", "Субдуральна гематома",
+        "Риніт", "Риносинусит", "Синусит (фронтит)", "Грибковий риніт",
+        "Стороннє тіло носової порожнини", "Абсцес орбіти",
+        "Ретробульбарна маса", "Вивих кришталика", "Патологія слізної залози",
+        "Отит середнього/внутрішнього вуха", "Поліп вуха",
+        "Періодонтит", "Пародонтоз", "Периапікальний абсцес",
+        "Перелом щелепи", "Остеомієліт щелепи", "Кіста щелепи",
+        "Краніомандибулярна остеопатія",
+        "Дисфункція скронево-нижньощелепного суглоба",
+        "Сіалоцеле (слинна залоза)"
+      ],
+      "Хребет та спинний мозок": [
+        "Грижа міжхребцевого диска (тип I, екструзія)",
+        "Грижа міжхребцевого диска (тип II, протрузія)",
+        "Дискоспондиліт", "Спондилоз (деформуючий спондильоз)",
+        "Стеноз хребетного каналу", "Звуження міжхребцевого отвору",
+        "Мієліт (запалення спинного мозку)", "Мієлопатія",
+        "Атланто-аксіальна нестабільність", "Перелом хребця",
+        "Вивих хребця", "Сакральна агенезія", "Синдром кінського хвоста",
+        "Спінальний інсульт (фіброкартілажна емболія)",
+        "Арахноїдальна кіста", "Сирингомієлія / гідромієлія"
+      ],
+      "Грудна клітка": [
+        "Пневмонія (бактеріальна, аспіраційна)", "Грибкова пневмонія",
+        "Мікобактеріальна інфекція", "Еозинофільна бронхопневмопатія",
+        "Ідіопатичний фіброз легень", "Бронхіт", "Бронхоектазія",
+        "Колапс бронхів", "Колапс трахеї", "Гіпоплазія трахеї",
+        "Стеноз трахеї", "Легеневий вузол (солітарний)", "Ателектаз легені",
+        "Торсія частки легені", "Легеневий абсцес", "Пневмоторакс",
+        "Плевральний випіт", "Піоторакс", "Хілоторакс", "Гемоторакс",
+        "Пневмомедіастинум", "Діафрагмальна грижа", "Розрив діафрагми",
+        "Перелом ребер", "Абсцес грудної стінки",
+        "Стороннє тіло в грудній порожнині",
+        "Мігруюче стороннє тіло (остиста трава)",
+        "Перикардіальний випіт", "Легенева гіпертензія",
+        "Тромбоемболія легеневої артерії", "Відкрита артеріальна протока (ВАП)",
+        "Судинне кільце (аномалія)", "Аневризма аорти", "Розшарування аорти"
+      ],
+      "Черевна порожнина": [
+        "Гепатомегалія", "Вузлова гіперплазія печінки", "Печінковий абсцес",
+        "Кіста печінки", "Портасистемний шунт (вроджений, набутий)",
+        "Цироз печінки", "Холецистит", "Жовчнокам'яна хвороба",
+        "Мукоцеле жовчного міхура", "Панкреатит (гострий, хронічний)",
+        "Панкреатична кіста", "Інсулінома", "Гастрит", "Виразка шлунка",
+        "Кишкова непрохідність", "Стороннє тіло ШКТ (лінійне, трихобезоар)",
+        "Інвагінація кишечника", "Заворот кишечника", "Перфорація кишечника",
+        "Лімфома ШКТ", "Запальне захворювання кишечника (ЗЗК)",
+        "Мегаколон", "Коліт", "Перитоніт", "Гемоперитонеум",
+        "Пневмоперитонеум", "Асцит", "Гемангіосаркома селезінки",
+        "Вузлова гіперплазія селезінки", "Лімфома селезінки",
+        "Гематома селезінки", "Перекрут селезінки",
+        "Ліпома (черевна, заочеревинна)", "Заочеревинний випіт",
+        "Заочеревинна маса"
+      ],
+      "Сечостатева система": [
+        "Гідронефроз", "Пієлонефрит", "Ниркові камені (нефролітіаз)",
+        "Ниркова кіста", "Інфаркт нирки", "Ектопія мочеточника",
+        "Розрив сечового міхура", "Сечокам'яна хвороба (уролітіаз)",
+        "Цистит", "Дивертикул сечового міхура",
+        "Нетримання сечі (анатомічні причини)", "Гіперплазія простати",
+        "Простатит", "Абсцес простати", "Кіста простати", "Піометра",
+        "Гідрометра", "Кіста яєчників", "Стороннє тіло матки",
+        "Крипторхізм", "Перекрут яєчка"
+      ],
+      "Опорно-руховий апарат": [
+        "Остеоартрит", "Дисплазія кульшового суглоба",
+        "Дисплазія ліктьового суглоба",
+        "Розрив передньої хрестоподібної зв'язки", "Розрив меніска",
+        "Вивих колінної чашечки", "Паностеїт", "Остеомієліт",
+        "Септичний артрит", "Перелом кістки (простий, осколковий)",
+        "Патологічний перелом", "Вивих суглоба", "Розрив сухожилля",
+        "Тендиніт", "Бурсит", "Абсцес м'яких тканин кінцівки",
+        "Стороннє тіло кінцівки", "Остеохондроз",
+        "Розсікаючий остеохондрит (РОХ)", "Гіпертрофічна остеодистрофія",
+        "Гіперпаратиреоз (вторинний нирковий)",
+        "Ниркова остеодистрофія (гумова щелепа)"
+      ],
+      "М'які тканини": [
+        "Ліпома", "Ліпосаркома", "Фібросаркома", "Мастоцитома",
+        "Меланома", "Плоскоклітинний рак шкіри",
+        "Абсцес (підшкірний, м'язовий)", "Гематома", "Серома",
+        "Набряк (локальний, генералізований)",
+        "Стороннє тіло м'яких тканин", "Міозит (запалення м'язів)",
+        "Рабдоміосаркома", "Саркома м'яких тканин"
+      ],
+      "Лімфатична система": [
+        "Лімфаденопатія (реактивна)",
+        "Лімфома (мультицентрична, аліментарна)",
+        "Лімфангіектазія", "Хілоторакс (лімфатична причина)"
+      ],
+      "Судини та серце": [
+        "Тромбоз (аорти, ворітної вени)", "Артеріовенозна фістула",
+        "Газова емболія", "Внутрішньопортальний газ",
+        "Аневризма (судинна)", "Судинна мальформація",
+        "Кардіомегалія", "Гідроперикард"
+      ],
+      "Інше": [
+        "Інше (вказати в примітках)"
+      ]
+    };
+
+    // ==================== СТАН ====================
+    let studies = [];
+    let selectedStudyId = null;
+    let searchQuery = '';
+    let filterSpecies = '';
+    let filterBodyPart = '';
+    let filterContrast = '';
+    let bodyPartsBuffer = [];
+    let selectedDiagnoses = new Set();
+
+    const DEFAULT_PASSWORD = '2508';
+    const PASSWORD_KEY = 'vetCTJournalPassword';
+
+    function getPassword() { return localStorage.getItem(PASSWORD_KEY) || DEFAULT_PASSWORD; }
+    function setPassword(newPass) { localStorage.setItem(PASSWORD_KEY, newPass); }
+    async function requirePassword(actionLabel) {
+      const pwd = await electronPrompt(`Введіть пароль для дії: ${actionLabel}`);
+      if (pwd === null) return false;
+      if (pwd === getPassword()) return true;
+      alert('Невірний пароль.');
+      return false;
+    }
+
+    // ==================== ЗАВАНТАЖЕННЯ / ЗБЕРЕЖЕННЯ ====================
+    function loadStudies() {
+      const stored = localStorage.getItem('vetCTJournal');
+      if (stored) {
+        try { studies = JSON.parse(stored); }
+        catch (e) { console.error(e); studies = []; }
+      }
+      studies.forEach(s => {
+        if (!Array.isArray(s.bodyParts)) {
+          s.bodyParts = s.bodyPart ? [s.bodyPart] : [];
+          delete s.bodyPart;
+        }
+      });
+    }
+    function saveStudies() { localStorage.setItem('vetCTJournal', JSON.stringify(studies)); }
+
+    // ==================== ФІЛЬТРАЦІЯ ====================
+    function studyMatchesFilters(study) {
+      if (filterSpecies && study.species !== filterSpecies) return false;
+      if (filterBodyPart && !(study.bodyParts || []).includes(filterBodyPart)) return false;
+      if (filterContrast === 'with' && !study.withContrast) return false;
+      if (filterContrast === 'without' && study.withContrast) return false;
+
+      if (!searchQuery) return true;
+      const q = searchQuery.toLowerCase();
+      const basic = [
+        study.id, study.patientName, study.species, study.breed, study.owner,
+        (study.bodyParts || []).join(' '), study.date, study.contrastType
+      ].filter(Boolean).join(' ').toLowerCase();
+      if (basic.includes(q)) return true;
+
+      if (study.pathologies && study.pathologies.some(p => {
+        const pStr = [p.diagnosis, p.category, p.location, p.notes].filter(Boolean).join(' ').toLowerCase();
+        return pStr.includes(q);
+      })) return true;
+
+      return false;
+    }
+
+    // ==================== ПІДСВІЧУВАННЯ ====================
+    function highlight(text, query) {
+      if (!query || !text) return text || '';
+      const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp(`(${safeQuery})`, 'gi');
+      return String(text).replace(re, '<mark>$1</mark>');
+    }
+
+    // ==================== РЕНДЕРИНГ ТАБЛИЦІ ====================
+    function renderStudiesTable() {
+      const tbody = document.querySelector('#studiesTable tbody');
+      tbody.innerHTML = '';
+      const filtered = studies.filter(studyMatchesFilters);
+
+      document.getElementById('resultCount').textContent =
+        `Знайдено: ${filtered.length} з ${studies.length}`;
+
+      filtered.forEach(study => {
+        const tr = document.createElement('tr');
+        if (study.id === selectedStudyId) tr.classList.add('selected');
+        tr.dataset.id = study.id;
+        const pathCount = study.pathologies ? study.pathologies.length : 0;
+        const badgeClass = pathCount === 0 ? 'badge zero' : 'badge';
+        const pathSummary = pathCount > 0
+          ? study.pathologies.map(p => p.diagnosis).join('; ')
+          : '—';
+
+        let contrastCell;
+        if (study.withContrast) {
+          const ct = study.contrastType ? study.contrastType : 'так';
+          contrastCell = `<span class="badge contrast">+</span> ${highlight(ct, searchQuery)}`;
+        } else {
+          contrastCell = `<span class="badge nocontrast">—</span>`;
+        }
+
+        const bodyPartsStr = (study.bodyParts || []).join(', ');
+
+        tr.innerHTML = `
+          <td class="id-cell">${highlight(study.id, searchQuery)}</td>
+          <td>${study.date || ''}</td>
+          <td>${highlight(study.patientName, searchQuery)}</td>
+          <td>${study.species || ''}</td>
+          <td>${highlight(bodyPartsStr, searchQuery)}</td>
+          <td>${contrastCell}</td>
+          <td><span class="${badgeClass}">${pathCount}</span> ${highlight(pathSummary, searchQuery)}</td>
+          <td><button class="danger delete-study" data-id="${study.id}">Видалити</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ==================== РЕНДЕРИНГ ДЕТАЛЕЙ ====================
+    function renderDetail() {
+      const panel = document.getElementById('detail-panel');
+      if (!selectedStudyId) { panel.classList.add('hidden'); return; }
+      const study = studies.find(s => s.id === selectedStudyId);
+      if (!study) { panel.classList.add('hidden'); return; }
+      panel.classList.remove('hidden');
+
+      const contrastInfo = study.withContrast
+        ? `<span style="color:#0b3d22;font-weight:800;">ТАК</span> — ${study.contrastType || 'вид не вказано'}`
+        : `<span style="color:#3d3d3d;font-weight:800;">НІ</span>`;
+
+      document.getElementById('studyDetails').innerHTML = `
+        <p><strong>ID дослідження:</strong> <span class="id-cell">${study.id}</span></p>
+        <p><strong>Кличка:</strong> ${study.patientName || '-'}</p>
+        <p><strong>Вид:</strong> ${study.species || '-'} | <strong>Порода:</strong> ${study.breed || '-'} | <strong>Вік:</strong> ${study.age || '-'} | <strong>Стать:</strong> ${study.sex || '-'}</p>
+        <p><strong>Власник:</strong> ${study.owner || '-'}</p>
+        <p><strong>Дата:</strong> ${study.date || '-'}</p>
+        <p><strong>Ділянки тіла:</strong> ${(study.bodyParts || []).join(', ') || '-'}</p>
+        <p><strong>Контрастування:</strong> ${contrastInfo}</p>
+      `;
+
+      const ul = document.getElementById('pathologyList');
+      ul.innerHTML = '';
+      if (study.pathologies && study.pathologies.length > 0) {
+        study.pathologies.forEach((p, idx) => {
+          const li = document.createElement('li');
+          const pid = p.shortId || `D-${idx + 1}`;
+          li.innerHTML = `
+            <span>
+              <strong>${pid}</strong> — <strong>${highlight(p.diagnosis, searchQuery)}</strong>
+              ${p.category ? '[' + p.category + ']' : ''}
+              ${p.location ? '— ' + highlight(p.location, searchQuery) : ''}
+              ${p.notes ? '— ' + highlight(p.notes, searchQuery) : ''}
+            </span>
+            <button class="danger delete-pathology" data-study-id="${study.id}" data-pathology-id="${p.id}">Видалити</button>
+          `;
+          ul.appendChild(li);
+        });
+      } else {
+        ul.innerHTML = '<li>Немає записаних діагнозів</li>';
+      }
+    }
+
+    // ==================== УНІВЕРСАЛЬНЕ МОДАЛЬНЕ ВІКНО ВИБОРУ (порода / ділянки / категорія) ====================
+    const NO_CONTRAST = 'Без контрастування';
+    const CONTRAST_TYPES = ["Внутрішньовенно","Орального","Вістулографія","Сіалографія","Ретроградна цистографія","Дакріоцистографія","Мієлографія","Інше"];
+    const CATEGORY_LIST = ["Голова та ЦНС","Хребет та спинний мозок","Грудна клітка","Черевна порожнина","Сечостатева система","Опорно-руховий апарат","М'які тканини","Лімфатична система","Судини та серце","Онкоскринінг","Інше"];
+    function listFromDatalist(id) {
+      return [...document.querySelectorAll('#' + id + ' option')].map(o => o.value);
+    }
+    const picker = { cfg: null, selected: new Set(), extra: [] };
+
+    function pickerClose(apply) {
+      if (picker.cfg && apply) picker.cfg.onDone([...picker.selected]);
+      document.getElementById('pickerModal').classList.add('hidden');
+      picker.cfg = null;
+    }
+    function pickerRender() {
+      const cfg = picker.cfg; if (!cfg) return;
+      const box = document.getElementById('pickerOptions');
+      const q = document.getElementById('pickerSearch').value.trim();
+      const f = q.toLowerCase();
+      box.innerHTML = '';
+      const all = cfg.options.concat(picker.extra.filter(x => !cfg.options.includes(x)));
+      const items = all.filter(o => !f || o.toLowerCase().includes(f));
+
+      if (cfg.allowCustom && q && !all.some(o => o.toLowerCase() === f)) {
+        const lab = document.createElement('label');
+        lab.className = 'ms-option custom';
+        lab.dataset.custom = q;
+        lab.innerHTML = '<span></span>';
+        lab.firstChild.textContent = '➕ Додати свій варіант: «' + q + '»';
+        box.appendChild(lab);
+      }
+      items.forEach(o => {
+        const lab = document.createElement('label');
+        const sel = picker.selected.has(o);
+        lab.className = 'ms-option' + (sel ? ' selected' : '') + (!cfg.multi && sel ? ' radio-sel' : '');
+        lab.dataset.value = o;
+        if (cfg.multi) {
+          const cb = document.createElement('input');
+          cb.type = 'checkbox'; cb.value = o; cb.checked = sel;
+          lab.appendChild(cb);
+        }
+        const sp = document.createElement('span'); sp.textContent = o;
+        lab.appendChild(sp);
+        box.appendChild(lab);
+      });
+      if (!box.children.length) box.innerHTML = '<div class="ms-empty">Нічого не знайдено. Введіть інший запит.</div>';
+      document.getElementById('pickerCount').textContent = cfg.multi ? `Обрано: ${picker.selected.size}` : '';
+    }
+    function openPicker(cfg) {
+      picker.cfg = cfg;
+      picker.selected = new Set(cfg.selected || []);
+      picker.extra = [...picker.selected].filter(x => !cfg.options.includes(x));
+      document.getElementById('pickerTitle').textContent = cfg.title;
+      const s = document.getElementById('pickerSearch');
+      s.value = ''; s.placeholder = 'Пошук…';
+      // для одиночного вибору кнопка «Готово» не потрібна, лишаємо «Очистити»
+      document.getElementById('pickerDoneBtn').style.display = cfg.multi ? '' : 'none';
+      document.getElementById('pickerModal').classList.remove('hidden');
+      pickerRender();
+      setTimeout(() => s.focus(), 0);
+    }
+    function pickerChoose(val) {
+      const cfg = picker.cfg; if (!cfg) return;
+      if (cfg.multi) {
+        if (picker.selected.has(val)) picker.selected.delete(val); else picker.selected.add(val);
+        if (!cfg.options.includes(val) && !picker.extra.includes(val)) picker.extra.push(val);
+        pickerRender();
+      } else {
+        picker.selected = new Set([val]);
+        pickerClose(true);
+      }
+    }
+    function initPickers() {
+      const modal = document.getElementById('pickerModal');
+      const box = document.getElementById('pickerOptions');
+      const search = document.getElementById('pickerSearch');
+
+      box.addEventListener('click', (e) => {
+        const lab = e.target.closest('.ms-option'); if (!lab) return;
+        e.preventDefault();
+        pickerChoose(lab.dataset.custom !== undefined ? lab.dataset.custom : lab.dataset.value);
+        if (picker.cfg && picker.cfg.multi && lab.dataset.custom !== undefined) { search.value = ''; pickerRender(); }
+      });
+      search.addEventListener('input', pickerRender);
+      search.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const first = box.querySelector('.ms-option');
+          if (first) pickerChoose(first.dataset.custom !== undefined ? first.dataset.custom : first.dataset.value);
+        }
+      });
+      document.getElementById('pickerDoneBtn').addEventListener('click', () => pickerClose(true));
+      document.getElementById('pickerCloseBtn').addEventListener('click', () => pickerClose(false));
+      document.getElementById('pickerClearBtn').addEventListener('click', () => {
+        picker.selected.clear(); pickerRender();
+        if (picker.cfg && !picker.cfg.multi) pickerClose(true);
+      });
+      modal.addEventListener('mousedown', (e) => { if (e.target === modal) pickerClose(picker.cfg && picker.cfg.multi); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) pickerClose(false);
+      });
+
+      const bind = (el, openFn) => {
+        el.addEventListener('click', openFn);
+        el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openFn(); } });
+      };
+
+      const breedEl = document.getElementById('breedInput');
+      bind(breedEl, () => openPicker({
+        title: 'Оберіть породу', options: listFromDatalist('breedList'), multi: false, allowCustom: true,
+        selected: breedEl.value ? [breedEl.value] : [],
+        onDone: (arr) => { breedEl.value = arr[0] || ''; }
+      }));
+
+      const bpEl = document.getElementById('bodyPartInput');
+      bind(bpEl, () => openPicker({
+        title: 'Оберіть ділянки тіла', options: listFromDatalist('bodyPartList'), multi: true, allowCustom: true,
+        selected: bodyPartsBuffer.slice(),
+        onDone: (arr) => { bodyPartsBuffer = arr; renderBodyPartChips(); }
+      }));
+
+      const conEl = document.getElementById('contrastInput');
+      bind(conEl, () => openPicker({
+        title: 'Контрастування', options: [NO_CONTRAST].concat(CONTRAST_TYPES), multi: false, allowCustom: true,
+        selected: conEl.value ? [conEl.value] : [NO_CONTRAST],
+        onDone: (arr) => { conEl.value = arr[0] || NO_CONTRAST; }
+      }));
+
+      const catEl = document.getElementById('categoryInput');
+      bind(catEl, () => openPicker({
+        title: 'Оберіть категорію', options: CATEGORY_LIST, multi: false, allowCustom: false,
+        selected: catEl.value ? [catEl.value] : [],
+        onDone: (arr) => { catEl.value = arr[0] || ''; }
+      }));
+    }
+
+    // ==================== CHIPS (ділянки тіла) ====================
+    function renderBodyPartChips() {
+      const container = document.getElementById('bodyPartChips');
+      container.innerHTML = '';
+      bodyPartsBuffer.forEach((part, idx) => {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.innerHTML = `${part} <button type="button" data-idx="${idx}" title="Видалити">×</button>`;
+        container.appendChild(chip);
+      });
+    }
+    function addBodyPartFromInput() {
+      const input = document.getElementById('bodyPartInput');
+      const val = input.value.trim();
+      if (!val) return;
+      if (!bodyPartsBuffer.includes(val)) bodyPartsBuffer.push(val);
+      input.value = '';
+      renderBodyPartChips();
+    }
+
+    // ==================== МУЛЬТИВИБІР ДІАГНОЗІВ — ВИПРАВЛЕНО ====================
+    function renderDiagnosisOptions(filter = '') {
+      const optionsDiv = document.getElementById('diagnosisOptions');
+      optionsDiv.innerHTML = '';
+      const f = filter.trim().toLowerCase();
+      let visible = 0;
+
+      Object.keys(DIAGNOSES).forEach(group => {
+        const items = DIAGNOSES[group].filter(d => !f || d.toLowerCase().includes(f));
+        if (items.length === 0) return;
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'ms-group';
+        groupDiv.textContent = group;
+        optionsDiv.appendChild(groupDiv);
+        items.forEach(d => {
+          const opt = document.createElement('label');
+          opt.className = 'ms-option' + (selectedDiagnoses.has(d) ? ' selected' : '');
+          opt.dataset.value = d;
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.value = d;
+          cb.checked = selectedDiagnoses.has(d);
+          const span = document.createElement('span');
+          span.textContent = d;
+          opt.appendChild(cb);
+          opt.appendChild(span);
+          optionsDiv.appendChild(opt);
+          visible++;
+        });
+      });
+
+      if (visible === 0) {
+        optionsDiv.innerHTML = '<div class="ms-empty">Нічого не знайдено. Введіть інший запит.</div>';
+      }
+
+      document.getElementById('msCount').textContent = `Обрано: ${selectedDiagnoses.size}`;
+    }
+
+    const DX_DRAFT_KEY = 'vetCTJournalDraftDiagnoses';
+    function saveDiagnosisDraft() {
+      try { localStorage.setItem(DX_DRAFT_KEY, JSON.stringify([...selectedDiagnoses])); } catch (e) {}
+    }
+    function loadDiagnosisDraft() {
+      try {
+        const arr = JSON.parse(localStorage.getItem(DX_DRAFT_KEY) || '[]');
+        if (Array.isArray(arr)) arr.forEach(d => selectedDiagnoses.add(d));
+      } catch (e) {}
+    }
+    function updateDiagnosisTrigger() {
+      const inp = document.getElementById('diagnosisSearch');
+      const n = selectedDiagnoses.size;
+      inp.value = n === 0 ? '' : (n === 1 ? [...selectedDiagnoses][0] : `Обрано ${n}: ` + [...selectedDiagnoses].join('; '));
+      inp.title = [...selectedDiagnoses].join('\n');
+    }
+    function renderDiagnosisChips() {
+      const box = document.getElementById('dxChips');
+      box.innerHTML = '';
+      selectedDiagnoses.forEach(d => {
+        const c = document.createElement('span');
+        c.className = 'dx-chip';
+        c.textContent = d;
+        box.appendChild(c);
+      });
+    }
+    function openDiagnosisDropdown() {
+      document.getElementById('diagnosisModal').classList.remove('hidden');
+      const s = document.getElementById('diagnosisModalSearch');
+      s.value = '';
+      renderDiagnosisOptions('');
+      renderDiagnosisChips();
+      setTimeout(() => s.focus(), 0);
+    }
+    function closeDiagnosisDropdown() {
+      document.getElementById('diagnosisModal').classList.add('hidden');
+      updateDiagnosisTrigger();
+      saveDiagnosisDraft();
+    }
+
+    // ==================== ДІЇ ====================
+    function selectStudy(id) {
+      selectedStudyId = id;
+      renderStudiesTable();
+      renderDetail();
+    }
+
+    function addStudy(e) {
+      e.preventDefault();
+      const form = e.target;
+      const fd = new FormData(form);
+      const id = (fd.get('studyId') || '').trim();
+      if (!id) { alert('Будь ласка, введіть ID дослідження.'); return; }
+      if (studies.some(s => s.id === id)) { alert(`Дослідження з ID "${id}" вже існує.`); return; }
+      const pendingPart = document.getElementById('bodyPartInput').value.trim();
+      if (pendingPart && !bodyPartsBuffer.includes(pendingPart)) bodyPartsBuffer.push(pendingPart);
+      if (bodyPartsBuffer.length === 0) { alert('Додайте хоча б одну ділянку тіла.'); return; }
+
+      const contrastVal = (fd.get('contrastValue') || '').trim();
+      const withContrast = !!contrastVal && contrastVal !== NO_CONTRAST;
+      const contrastType = withContrast ? contrastVal : '';
+
+      const newStudy = {
+        id, patientName: fd.get('patientName'), species: fd.get('species'),
+        breed: fd.get('breed'), age: fd.get('age'), sex: fd.get('sex'),
+        owner: fd.get('owner'), date: fd.get('date'),
+        bodyParts: bodyPartsBuffer.slice(),
+        withContrast, contrastType, pathologies: []
+      };
+      studies.push(newStudy);
+      saveStudies();
+      form.reset();
+      bodyPartsBuffer = [];
+      renderBodyPartChips();
+      selectedStudyId = newStudy.id;
+      renderStudiesTable();
+      renderDetail();
+      alert(`Створено дослідження з ID: ${newStudy.id}`);
+    }
+
+    function addPathologies(e) {
+      e.preventDefault();
+      if (!selectedStudyId) { alert('Спочатку оберіть дослідження в таблиці.'); return; }
+      const study = studies.find(s => s.id === selectedStudyId);
+      if (!study) return;
+      if (!(new FormData(e.target).get('category') || '').trim()) { alert('Оберіть категорію.'); return; }
+      if (selectedDiagnoses.size === 0) { alert('Оберіть хоча б один діагноз.'); return; }
+      const fd = new FormData(e.target);
+      const category = fd.get('category');
+      const location = (fd.get('location') || '').trim();
+      const notes = (fd.get('notes') || '').trim();
+
+      if (!study.pathologies) study.pathologies = [];
+
+      let addedCount = 0;
+      selectedDiagnoses.forEach(diagnosis => {
+        const nextIndex = study.pathologies.length + 1;
+        study.pathologies.push({
+          id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
+          shortId: `D-${nextIndex}`,
+          category, diagnosis, location, notes
+        });
+        addedCount++;
+      });
+
+      saveStudies();
+      selectedDiagnoses.clear();
+      saveDiagnosisDraft();
+      e.target.reset();
+      updateDiagnosisTrigger();
+      renderDiagnosisOptions();
+      renderStudiesTable();
+      renderDetail();
+      alert(`Додано діагнозів: ${addedCount}`);
+    }
+
+    async function deleteStudy(id) {
+      if (!await requirePassword('видалення дослідження')) return;
+      if (!confirm(`Видалити дослідження ${id}?`)) return;
+      studies = studies.filter(s => s.id !== id);
+      if (selectedStudyId === id) selectedStudyId = null;
+      saveStudies(); renderStudiesTable(); renderDetail();
+    }
+
+    async function deletePathology(studyId, pathologyId) {
+      if (!await requirePassword('видалення діагнозу')) return;
+      const study = studies.find(s => s.id === studyId);
+      if (!study || !study.pathologies) return;
+      study.pathologies = study.pathologies.filter(p => p.id !== pathologyId);
+      study.pathologies.forEach((p, idx) => { p.shortId = `D-${idx + 1}`; });
+      saveStudies(); renderStudiesTable(); renderDetail();
+    }
+
+    function exportCSV() {
+      if (studies.length === 0) { alert('Немає даних для експорту'); return; }
+      const headers = [
+        'ID дослідження','Дата','Кличка','Вид','Порода','Вік','Стать','Власник',
+        'Ділянки тіла','З контрастом','Вид контрасту',
+        'ID діагнозу','Категорія','Діагноз','Локалізація','Примітки'
+      ];
+      const rows = [];
+      studies.forEach(s => {
+        const bp = (s.bodyParts || []).join('; ');
+        if (s.pathologies && s.pathologies.length > 0) {
+          s.pathologies.forEach((p, idx) => {
+            rows.push([s.id, s.date||'', s.patientName||'', s.species||'', s.breed||'', s.age||'',
+              s.sex||'', s.owner||'', bp, s.withContrast?'ТАК':'НІ', s.contrastType||'',
+              p.shortId||`D-${idx+1}`, p.category||'', p.diagnosis||'', p.location||'', p.notes||'']);
+          });
+        } else {
+          rows.push([s.id, s.date||'', s.patientName||'', s.species||'', s.breed||'', s.age||'',
+            s.sex||'', s.owner||'', bp, s.withContrast?'ТАК':'НІ', s.contrastType||'',
+            '','','','','']);
+        }
+      });
+      const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `vet_ct_journal_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // ==================== ІНІЦІАЛІЗАЦІЯ ====================
+    document.addEventListener('DOMContentLoaded', () => {
+      loadStudies();
+      renderStudiesTable();
+      renderDetail();
+      renderBodyPartChips();
+
+      document.getElementById('newStudyForm').addEventListener('submit', addStudy);
+      document.getElementById('newPathologyForm').addEventListener('submit', addPathologies);
+      document.getElementById('exportBtn').addEventListener('click', exportCSV);
+
+      initPickers();
+      document.getElementById('bodyPartChips').addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+          const idx = parseInt(e.target.dataset.idx, 10);
+          bodyPartsBuffer.splice(idx, 1);
+          renderBodyPartChips();
+        }
+      });
+
+      // ===== ДІАГНОЗИ: МОДАЛЬНЕ ВІКНО =====
+      const diagSearch = document.getElementById('diagnosisSearch');
+      const diagModal = document.getElementById('diagnosisModal');
+      const diagOptions = document.getElementById('diagnosisOptions');
+      const diagModalSearch = document.getElementById('diagnosisModalSearch');
+
+      loadDiagnosisDraft();
+      updateDiagnosisTrigger();
+
+      diagSearch.addEventListener('click', () => openDiagnosisDropdown());
+      diagSearch.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDiagnosisDropdown(); }
+      });
+      diagModalSearch.addEventListener('input', () => renderDiagnosisOptions(diagModalSearch.value));
+      diagModalSearch.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.preventDefault(); });
+
+      diagOptions.addEventListener('change', (e) => {
+        if (e.target && e.target.type === 'checkbox') {
+          const val = e.target.value;
+          if (e.target.checked) selectedDiagnoses.add(val);
+          else selectedDiagnoses.delete(val);
+          const label = e.target.closest('.ms-option');
+          if (label) label.classList.toggle('selected', e.target.checked);
+          document.getElementById('msCount').textContent = `Обрано: ${selectedDiagnoses.size}`;
+          renderDiagnosisChips();
+          saveDiagnosisDraft();
+        }
+      });
+
+      document.getElementById('dxDoneBtn').addEventListener('click', closeDiagnosisDropdown);
+      document.getElementById('dxCloseBtn').addEventListener('click', closeDiagnosisDropdown);
+      diagModal.addEventListener('mousedown', (e) => { if (e.target === diagModal) closeDiagnosisDropdown(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !diagModal.classList.contains('hidden')) closeDiagnosisDropdown();
+      });
+
+      document.getElementById('msClearBtn').addEventListener('click', () => {
+        selectedDiagnoses.clear();
+        renderDiagnosisOptions(diagModalSearch.value);
+        renderDiagnosisChips();
+        saveDiagnosisDraft();
+      });
+
+      document.getElementById('changePasswordBtn').addEventListener('click', async () => {
+        const oldPwd = await electronPrompt('Введіть поточний пароль:');
+        if (oldPwd === null) return;
+        if (oldPwd !== getPassword()) { alert('Невірний поточний пароль.'); return; }
+        const newPwd = await electronPrompt('Введіть новий пароль:');
+        if (newPwd === null || newPwd.trim() === '') { alert('Пароль не змінено.'); return; }
+        const confirmPwd = await electronPrompt('Повторіть новий пароль:');
+        if (confirmPwd !== newPwd) { alert('Паролі не співпадають.'); return; }
+        setPassword(newPwd);
+        alert('Пароль успішно змінено.');
+      });
+
+      document.getElementById('clearBtn').addEventListener('click', async () => {
+        if (!await requirePassword('очищення всіх даних')) return;
+        if (!confirm('Ви впевнені? Усі дані буде видалено назавжди.')) return;
+        studies = []; selectedStudyId = null;
+        saveStudies(); renderStudiesTable(); renderDetail();
+        alert('Усі дані видалено.');
+      });
+
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        searchQuery = e.target.value.trim();
+        renderStudiesTable();
+      });
+      document.getElementById('speciesFilter').addEventListener('change', (e) => { filterSpecies = e.target.value; renderStudiesTable(); });
+      document.getElementById('bodyPartFilter').addEventListener('change', (e) => { filterBodyPart = e.target.value; renderStudiesTable(); });
+      document.getElementById('contrastFilter').addEventListener('change', (e) => { filterContrast = e.target.value; renderStudiesTable(); });
+      document.getElementById('resetFilters').addEventListener('click', () => {
+        searchQuery = ''; filterSpecies = ''; filterBodyPart = ''; filterContrast = '';
+        document.getElementById('searchInput').value = '';
+        document.getElementById('speciesFilter').value = '';
+        document.getElementById('bodyPartFilter').value = '';
+        document.getElementById('contrastFilter').value = '';
+        renderStudiesTable();
+      });
+
+      document.querySelector('#studiesTable tbody').addEventListener('click', (e) => {
+        const tr = e.target.closest('tr');
+        if (!tr) return;
+        const id = tr.dataset.id;
+        if (e.target.classList.contains('delete-study')) deleteStudy(id);
+        else selectStudy(id);
+      });
+
+      document.getElementById('pathologyList').addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-pathology')) {
+          deletePathology(e.target.dataset.studyId, e.target.dataset.pathologyId);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
